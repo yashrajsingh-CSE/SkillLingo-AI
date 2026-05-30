@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillLingo AI — Multilingual Course Localization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+/* ===================== RESET & BASE ===================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#07080d;
+  color:#e8e8f0;
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+/* ===================== CSS VARS ===================== */
+:root{
+  --ink:#07080d;
+  --ink2:#0e0f18;
+  --ink3:#151622;
+  --ink4:#1c1e2e;
+  --ink5:#242638;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);
+  --text:#e8e8f0;
+  --text2:#9b9bb8;
+  --text3:#555575;
+  --violet:#7c6ff7;
+  --violet2:#9d94fa;
+  --cyan:#22d3ee;
+  --emerald:#34d399;
+  --amber:#fbbf24;
+  --rose:#fb7185;
+  --indigo:#818cf8;
+  --r:10px;
+  --r2:14px;
+  --r3:20px;
+}
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--ink5);border-radius:4px}
+
+/* ===================== LAYOUT ===================== */
+.shell{display:flex;height:100vh;overflow:hidden}
+
+/* ===================== SIDEBAR ===================== */
+.sidebar{
+  width:220px;min-width:220px;
+  background:var(--ink2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:width .25s ease,min-width .25s ease;
+  position:relative;z-index:10;
+}
+.sidebar.slim{width:60px;min-width:60px}
+
+.sb-logo{
+  display:flex;align-items:center;gap:10px;
+  padding:18px 14px;border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+.sb-logo-icon{
+  width:32px;height:32px;flex-shrink:0;
+  background:linear-gradient(135deg,#7c6ff7,#22d3ee);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:#fff;font-family:'Syne',sans-serif;font-weight:800;
+}
+.sb-logo-text{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:14px;
+  background:linear-gradient(90deg,#7c6ff7,#22d3ee);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  white-space:nowrap;overflow:hidden;
+}
+.sidebar.slim .sb-logo-text{display:none}
+
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto}
+.sb-section{margin-bottom:6px}
+.sb-label{
+  font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text3);padding:8px 8px 4px;white-space:nowrap;overflow:hidden;
+}
+.sidebar.slim .sb-label{visibility:hidden}
+
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:var(--r);
+  cursor:pointer;color:var(--text2);font-size:13px;
+  transition:all .15s;border:1px solid transparent;
+  white-space:nowrap;overflow:hidden;
+  background:none;width:100%;text-align:left;
+}
+.sb-item:hover{background:var(--ink3);color:var(--text)}
+.sb-item.act{
+  background:rgba(124,111,247,0.12);
+  border-color:rgba(124,111,247,0.25);
+  color:var(--violet2);
+}
+.sb-item i{font-size:17px;flex-shrink:0;min-width:17px}
+.sb-item span{overflow:hidden;text-overflow:ellipsis}
+.sidebar.slim .sb-item span,.sidebar.slim .sb-badge{display:none}
+.sb-badge{
+  margin-left:auto;flex-shrink:0;
+  background:rgba(124,111,247,0.3);color:var(--violet2);
+  font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;
+}
+
+.sb-user{
+  padding:12px 8px;border-top:1px solid var(--border);
+}
+.sb-user-inner{
+  display:flex;align-items:center;gap:10px;padding:8px;
+  border-radius:var(--r);cursor:pointer;transition:all .15s;overflow:hidden;
+}
+.sb-user-inner:hover{background:var(--ink3)}
+.sb-avatar{
+  width:32px;height:32px;flex-shrink:0;border-radius:50%;
+  background:linear-gradient(135deg,#7c6ff7,#22d3ee);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;
+}
+.sb-user-name{font-size:13px;font-weight:500;white-space:nowrap}
+.sb-user-role{font-size:11px;color:var(--text3)}
+.sidebar.slim .sb-user-name,.sidebar.slim .sb-user-role{display:none}
+
+/* ===================== MAIN ===================== */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* ===================== TOPBAR ===================== */
+.topbar{
+  height:54px;background:var(--ink2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;padding:0 20px;flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:center;gap:10px;flex:1}
+.tb-toggle{
+  width:32px;height:32px;border-radius:var(--r);
+  background:none;border:1px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);transition:all .15s;flex-shrink:0;
+}
+.tb-toggle:hover{background:var(--ink3);color:var(--text);border-color:var(--border2)}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text3)}
+.breadcrumb .cur{color:var(--text);font-weight:500}
+.searchbar{
+  display:flex;align-items:center;gap:8px;
+  background:var(--ink3);border:1px solid var(--border);
+  border-radius:var(--r);padding:6px 12px;cursor:pointer;
+  color:var(--text3);font-size:13px;transition:all .15s;
+  min-width:180px;max-width:260px;
+}
+.searchbar:hover{border-color:var(--border2)}
+.kbd{
+  margin-left:auto;background:var(--ink4);border:1px solid var(--border2);
+  border-radius:5px;padding:1px 5px;font-size:10px;color:var(--text3);font-family:monospace;
+}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.tb-btn{
+  width:34px;height:34px;border-radius:var(--r);
+  background:none;border:1px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);transition:all .15s;position:relative;
+}
+.tb-btn:hover{background:var(--ink3);color:var(--text);border-color:var(--border2)}
+.notif-dot{
+  position:absolute;top:6px;right:6px;width:6px;height:6px;
+  background:var(--rose);border-radius:50%;border:1.5px solid var(--ink2);
+}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;
+  cursor:pointer;transition:all .15s;border:none;font-family:'DM Sans',sans-serif;
+}
+.btn-primary{background:linear-gradient(135deg,#7c6ff7,#5b5bd6);color:#fff}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-ghost{background:var(--ink4);color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--ink3);color:var(--text)}
+
+/* ===================== CONTENT ===================== */
+.content{flex:1;overflow-y:auto;padding:24px 28px}
+.page{display:none;animation:fadeUp .2s ease}
+.page.act{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===================== PAGE HEADERS ===================== */
+.pg-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.pg-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.3px}
+.pg-sub{font-size:13px;color:var(--text3);margin-top:3px}
+.pg-actions{display:flex;gap:8px;align-items:center}
+
+/* ===================== CARDS ===================== */
+.card{
+  background:var(--ink2);border:1px solid var(--border);border-radius:var(--r3);
+  padding:20px;
+}
+.card-sm{padding:16px;border-radius:var(--r2)}
+.card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.1px}
+.card-sub{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* ===================== STAT CARDS ===================== */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{
+  background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px;cursor:pointer;transition:all .15s;
+}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.stat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.stat-icon{width:34px;height:34px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:17px}
+.stat-chip{font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px}
+.chip-up{background:rgba(52,211,153,0.15);color:#34d399}
+.chip-dn{background:rgba(251,113,133,0.15);color:#fb7185}
+.stat-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px}
+.stat-lbl{font-size:12px;color:var(--text3);margin-top:1px}
+.stat-foot{font-size:11px;color:var(--text3);margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+
+/* ===================== GRID LAYOUTS ===================== */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+.row3{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:22px}
+.row33{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+
+/* ===================== BAR CHART ===================== */
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:12px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar-val{font-size:10px;color:var(--text2);font-weight:600}
+.bar{width:100%;border-radius:5px 5px 0 0;cursor:pointer;transition:all .15s;min-height:4px}
+.bar:hover{opacity:.75;transform:scaleX(1.06)}
+.bar-lbl{font-size:10px;color:var(--text3)}
+
+/* ===================== BADGES ===================== */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.b-proc{background:rgba(124,111,247,0.18);color:#9d94fa}
+.b-done{background:rgba(52,211,153,0.15);color:#34d399}
+.b-queue{background:rgba(251,191,36,0.15);color:#fbbf24}
+.b-err{background:rgba(251,113,133,0.15);color:#fb7185}
+.b-rev{background:rgba(34,211,238,0.12);color:#22d3ee}
+
+/* ===================== PROGRESS ===================== */
+.prog-wrap{display:flex;align-items:center;gap:8px}
+.prog-track{flex:1;height:4px;background:var(--ink4);border-radius:4px;overflow:hidden;min-width:60px}
+.prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#7c6ff7,#9d94fa);transition:width .4s ease}
+.prog-lbl{font-size:11px;color:var(--text3);min-width:28px;text-align:right}
+
+/* ===================== TABLE ===================== */
+.tbl-wrap{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--text3);padding:10px 16px;border-bottom:1px solid var(--border);
+  text-align:left;background:var(--ink3);
+}
+td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.015)}
+.td-main{font-weight:500}
+.td-sub{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* ===================== TOGGLES ===================== */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px}
+.toggle-lbl{color:var(--text2)}
+.tog{
+  width:34px;height:18px;border-radius:18px;background:var(--ink4);
+  cursor:pointer;position:relative;transition:all .2s;border:1px solid var(--border2);flex-shrink:0;
+}
+.tog.on{background:var(--violet);border-color:transparent}
+.tog-thumb{
+  position:absolute;top:2px;left:2px;width:14px;height:14px;
+  background:#fff;border-radius:50%;transition:left .2s;
+}
+.tog.on .tog-thumb{left:18px}
+
+/* ===================== SELECT ===================== */
+.sel{
+  background:var(--ink3);border:1px solid var(--border2);border-radius:var(--r);
+  padding:7px 10px;color:var(--text);font-size:12px;
+  font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;width:100%;
+}
+.sel:hover{border-color:var(--border2)}
+
+/* ===================== INPUT ===================== */
+.inp{
+  background:var(--ink3);border:1px solid var(--border2);border-radius:var(--r);
+  padding:8px 12px;color:var(--text);font-size:13px;
+  font-family:'DM Sans',sans-serif;outline:none;width:100%;
+  transition:all .15s;
+}
+.inp:hover{border-color:var(--border2)}
+.inp:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(124,111,247,0.15)}
+.inp::placeholder{color:var(--text3)}
+
+/* ===================== ANIMATIONS ===================== */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes wave-anim{0%,100%{height:8px}50%{height:28px}}
+@keyframes ping{0%{transform:scale(1);opacity:1}75%,100%{transform:scale(2);opacity:0}}
+.pulsing{animation:pulse 2s ease infinite}
+.spinning{animation:spin 1s linear infinite}
+.live-dot{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.live-dot::before{
+  content:'';position:absolute;width:100%;height:100%;
+  border-radius:50%;background:inherit;animation:ping 1.5s ease infinite;
+}
+
+/* ===================== DONUT ===================== */
+.donut-legend{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.dleg-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.dleg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dleg-name{color:var(--text2);flex:1}
+.dleg-pct{font-weight:600;color:var(--text)}
+
+/* ===================== ACTIVITY ===================== */
+.act-list{display:flex;flex-direction:column}
+.act-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.act-item:last-child{border-bottom:none}
+.act-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.act-text{font-size:13px;line-height:1.45;color:var(--text2)}
+.act-text strong{color:var(--text);font-weight:500}
+.act-time{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* ===================== STUDIO ===================== */
+.studio-grid{display:grid;grid-template-columns:1fr 350px;gap:16px;min-height:calc(100vh - 130px)}
+.studio-main{display:flex;flex-direction:column;gap:14px}
+.video-card{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden}
+.video-area{
+  background:#000;min-height:220px;display:flex;align-items:center;justify-content:center;
+  position:relative;cursor:pointer;
+}
+.video-placeholder{text-align:center;color:var(--text3)}
+.video-placeholder i{font-size:44px;display:block;margin-bottom:8px}
+.video-controls{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;
+  border-top:1px solid var(--border);background:var(--ink3);
+}
+.vc-btn{
+  width:28px;height:28px;border-radius:var(--r);background:none;border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--text2);transition:all .15s;
+}
+.vc-btn:hover{background:var(--ink4);color:var(--text)}
+.waveform-row{display:flex;align-items:center;gap:2px;height:44px;cursor:pointer;margin-top:10px}
+.wv{width:3px;border-radius:2px;background:var(--violet);transition:all .15s;min-height:3px}
+.wv:hover{background:var(--cyan);opacity:.9}
+.wv.active{background:var(--cyan)}
+
+.sub-editor{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden}
+.sub-thead{
+  display:grid;grid-template-columns:80px 1fr 1fr 76px;gap:8px;
+  padding:9px 16px;background:var(--ink3);border-bottom:1px solid var(--border);
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);
+}
+.sub-row{
+  display:grid;grid-template-columns:80px 1fr 1fr 76px;gap:8px;
+  padding:10px 16px;border-bottom:1px solid var(--border);font-size:12px;
+  align-items:center;cursor:pointer;transition:all .1s;
+}
+.sub-row:hover{background:rgba(255,255,255,0.018)}
+.sub-row:last-child{border-bottom:none}
+.sub-row.active-sub{background:rgba(124,111,247,0.07);border-left:2px solid var(--violet)}
+.sub-time{font-family:monospace;font-size:11px;color:var(--text3)}
+.sub-src{color:var(--text2)}
+.sub-trg{color:var(--text)}
+.conf{display:flex;align-items:center;gap:5px;font-size:11px}
+.conf-bar{width:30px;height:3px;background:var(--ink4);border-radius:2px;overflow:hidden}
+.conf-fill{height:100%;border-radius:2px}
+
+.studio-panel{display:flex;flex-direction:column;gap:14px;overflow-y:auto;max-height:calc(100vh - 130px)}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.lang-chip{
+  display:flex;align-items:center;gap:6px;padding:7px 10px;
+  background:var(--ink3);border:1px solid var(--border);border-radius:var(--r);
+  font-size:12px;cursor:pointer;transition:all .15s;
+}
+.lang-chip:hover{border-color:var(--border2)}
+.lang-chip.sel-chip{background:rgba(124,111,247,0.1);border-color:rgba(124,111,247,0.35);color:var(--violet2)}
+.flag{font-size:15px}
+
+/* ===================== AI TUTOR ===================== */
+.tutor-grid{display:grid;grid-template-columns:1fr 300px;gap:16px;min-height:calc(100vh - 130px)}
+.chat-panel{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r3);display:flex;flex-direction:column;overflow:hidden;max-height:calc(100vh - 130px)}
+.chat-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.ai-ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c6ff7,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.online-dot{width:7px;height:7px;background:var(--emerald);border-radius:50%;display:inline-block;margin-right:4px}
+.suggestions{display:flex;flex-wrap:wrap;gap:5px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.sug-chip{
+  padding:5px 10px;border:1px solid var(--border2);border-radius:20px;
+  font-size:11px;color:var(--text2);cursor:pointer;transition:all .15s;background:none;
+  font-family:'DM Sans',sans-serif;
+}
+.sug-chip:hover{background:var(--ink3);border-color:var(--violet);color:var(--violet2)}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:82%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.55}
+.msg.user{background:linear-gradient(135deg,#7c6ff7,#5b5bd6);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.ai{background:var(--ink3);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;border:1px solid var(--border)}
+.msg-meta{font-size:10px;opacity:.55;margin-top:4px}
+.cursor{display:inline-block;width:7px;height:13px;background:var(--violet2);border-radius:1px;animation:pulse .6s infinite;vertical-align:-1px}
+.chat-footer{padding:10px 14px;border-top:1px solid var(--border)}
+.chat-input-row{display:flex;align-items:center;gap:8px}
+.chat-ta{
+  flex:1;background:var(--ink3);border:1px solid var(--border2);border-radius:var(--r);
+  padding:8px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;
+  outline:none;resize:none;max-height:80px;line-height:1.4;
+}
+.chat-ta::placeholder{color:var(--text3)}
+.chat-ta:focus{border-color:var(--violet)}
+.send-btn{
+  width:34px;height:34px;border-radius:var(--r);
+  background:linear-gradient(135deg,#7c6ff7,#5b5bd6);border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:#fff;flex-shrink:0;transition:all .15s;
+}
+.send-btn:hover{opacity:.85}
+
+/* ===================== UPLOAD ===================== */
+.drop-zone{
+  border:1.5px dashed var(--border2);border-radius:var(--r3);
+  padding:40px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:18px;
+}
+.drop-zone:hover,.drop-zone.dragging{border-color:var(--violet);background:rgba(124,111,247,0.05)}
+.drop-icon{font-size:44px;color:var(--text3);margin-bottom:10px;display:block}
+.format-pills{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:10px}
+.fmt{padding:3px 7px;background:var(--ink3);border:1px solid var(--border);border-radius:5px;font-size:10px;color:var(--text3);font-family:monospace}
+
+.upload-items{display:flex;flex-direction:column;gap:8px}
+.upload-item{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r2);padding:14px;display:flex;align-items:center;gap:12px}
+.file-icon{width:38px;height:38px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.file-info{flex:1}
+.file-name{font-size:13px;font-weight:500}
+.file-size{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* ===================== ANALYTICS ===================== */
+.metric-pill{
+  background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);
+  border-radius:var(--r2);padding:14px;text-align:center;
+}
+.metric-big{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--emerald)}
+.metric-lbl{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ===================== SETTINGS ===================== */
+.settings-grid{display:grid;grid-template-columns:180px 1fr;gap:20px}
+.settings-nav{display:flex;flex-direction:column;gap:2px}
+.settings-nav .sb-item{font-size:13px}
+
+/* ===================== BILLING ===================== */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.plan-card{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r3);padding:20px;text-align:center;position:relative;transition:all .15s}
+.plan-card.featured{border-color:rgba(124,111,247,0.5);border-width:1.5px}
+.plan-badge{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,#7c6ff7,#5b5bd6);color:#fff;
+  font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;
+}
+.plan-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px}
+.plan-price{font-family:'Syne',sans-serif;font-size:24px;font-weight:800}
+.plan-price span{font-size:13px;color:var(--text3);font-weight:400}
+.plan-desc{font-size:11px;color:var(--text3);margin:8px 0}
+.plan-feature{font-size:12px;color:var(--text2);line-height:1.8}
+
+/* ===================== TEAM ===================== */
+.team-ava{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;flex-shrink:0;
+}
+
+/* ===================== JOBS PAGE ===================== */
+.jobs-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.jsum{border-radius:var(--r2);padding:14px;text-align:center;border:1px solid transparent}
+.jsum-n{font-family:'Syne',sans-serif;font-size:26px;font-weight:800}
+.jsum-l{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* ===================== NOTIFICATIONS DRAWER ===================== */
+.drawer-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;
+}
+.drawer-overlay.open{display:block}
+.notif-drawer{
+  position:fixed;right:-340px;top:0;bottom:0;width:320px;
+  background:var(--ink2);border-left:1px solid var(--border);
+  z-index:110;transition:right .25s ease;padding:18px;overflow-y:auto;
+}
+.notif-drawer.open{right:0}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.notif-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.notif-col{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.notif-txt{font-size:12px;color:var(--text2);line-height:1.5}
+.notif-time{font-size:10px;color:var(--text3);margin-top:3px}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:960px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .studio-grid,.tutor-grid{grid-template-columns:1fr}
+  .studio-panel,.tutor-grid > .card:last-child{display:none}
+  .settings-grid{grid-template-columns:1fr}
+  .settings-nav{display:none}
+}
+@media(max-width:640px){
+  .sidebar{display:none}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .content{padding:14px}
+  .row2,.row3,.row33{grid-template-columns:1fr}
+  .plan-grid{grid-template-columns:1fr}
+}
+
+/* ===================== LANDING PAGE ===================== */
+.landing{display:none}
+.landing.act{display:block}
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;padding:40px 24px;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,111,247,0.15) 0%, transparent 70%);
+  position:relative;overflow:hidden;
+}
+.hero-nav{
+  position:absolute;top:0;left:0;right:0;display:flex;align-items:center;
+  justify-content:space-between;padding:20px 40px;
+}
+.hero-logo{display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:16px}
+.hero-logo-mark{
+  width:34px;height:34px;background:linear-gradient(135deg,#7c6ff7,#22d3ee);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:#fff;
+}
+.hero-nav-links{display:flex;gap:28px;font-size:13px;color:var(--text2)}
+.hero-nav-links a{color:var(--text2);text-decoration:none;transition:color .15s;cursor:pointer}
+.hero-nav-links a:hover{color:var(--text)}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(124,111,247,0.12);border:1px solid rgba(124,111,247,0.25);
+  border-radius:20px;padding:5px 14px;font-size:12px;color:var(--violet2);
+  margin-bottom:24px;font-weight:500;
+}
+.hero-h1{
+  font-family:'Syne',sans-serif;font-size:clamp(38px,6vw,72px);
+  font-weight:800;line-height:1.05;letter-spacing:-2px;
+  margin-bottom:20px;max-width:800px;
+}
+.hero-h1 .grad{
+  background:linear-gradient(90deg,#7c6ff7,#22d3ee,#7c6ff7);
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:gradShift 4s ease infinite;
+}
+@keyframes gradShift{0%,100%{background-position:0%}50%{background-position:100%}}
+.hero-sub{font-size:18px;color:var(--text2);max-width:560px;margin:0 auto 36px;line-height:1.6}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:60px}
+.cta-primary{
+  padding:13px 28px;background:linear-gradient(135deg,#7c6ff7,#5b5bd6);
+  color:#fff;border-radius:var(--r);font-size:15px;font-weight:600;
+  cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.cta-primary:hover{opacity:.9;transform:translateY(-2px)}
+.cta-secondary{
+  padding:13px 28px;background:var(--ink3);border:1px solid var(--border2);
+  color:var(--text);border-radius:var(--r);font-size:15px;font-weight:500;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.cta-secondary:hover{background:var(--ink4)}
+
+.hero-stats{display:flex;gap:40px;justify-content:center;padding:28px 40px;background:var(--ink2);border-radius:var(--r3);border:1px solid var(--border);max-width:600px;width:100%}
+.h-stat{text-align:center}
+.h-stat-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--violet2)}
+.h-stat-l{font-size:12px;color:var(--text3);margin-top:2px}
+
+.section{padding:80px 40px;max-width:1100px;margin:0 auto}
+.section-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--violet2);margin-bottom:8px}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-1px;margin-bottom:14px}
+.section-sub{font-size:16px;color:var(--text2);max-width:520px;line-height:1.6;margin-bottom:50px}
+
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat-card{
+  background:var(--ink2);border:1px solid var(--border);border-radius:var(--r3);
+  padding:24px;transition:all .2s;cursor:default;
+}
+.feat-card:hover{border-color:rgba(124,111,247,0.3);transform:translateY(-3px)}
+.feat-icon{
+  width:44px;height:44px;border-radius:var(--r2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:14px;
+}
+.feat-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px}
+.feat-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:860px;margin:0 auto}
+.price-card{
+  background:var(--ink2);border:1px solid var(--border);border-radius:var(--r3);
+  padding:28px;text-align:center;transition:all .2s;position:relative;
+}
+.price-card.popular{border-color:rgba(124,111,247,0.5)}
+.price-card:hover{transform:translateY(-3px)}
+.pop-badge{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,#7c6ff7,#22d3ee);
+  color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;
+}
+.price-tier{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px}
+.price-amount{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;margin-bottom:4px}
+.price-amount sup{font-size:18px;vertical-align:super}
+.price-amount .per{font-size:14px;color:var(--text3);font-weight:400}
+.price-desc{font-size:12px;color:var(--text3);margin-bottom:20px}
+.price-features{text-align:left;font-size:13px;color:var(--text2);line-height:2}
+.price-features .check{color:var(--emerald);margin-right:6px}
+
+.testimonials{background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:60px 40px}
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1000px;margin:0 auto}
+.test-card{background:var(--ink3);border:1px solid var(--border);border-radius:var(--r3);padding:24px}
+.test-stars{color:var(--amber);font-size:13px;margin-bottom:10px;letter-spacing:2px}
+.test-text{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:16px;font-style:italic}
+.test-author{display:flex;align-items:center;gap:10px}
+.test-ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.test-name{font-size:13px;font-weight:500}
+.test-role{font-size:11px;color:var(--text3)}
+
+.footer{background:var(--ink2);border-top:1px solid var(--border);padding:40px;text-align:center}
+.footer-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;font-family:'Syne',sans-serif;font-weight:800;font-size:16px}
+
+@media(max-width:768px){
+  .hero-nav{padding:16px 20px}
+  .hero-nav-links{display:none}
+  .features-grid,.pricing-grid,.test-grid{grid-template-columns:1fr}
+  .section{padding:50px 20px}
+  .hero-stats{flex-wrap:wrap;gap:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== DRAWER ==================== -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="notif-drawer" id="notifDrawer">
+  <div class="drawer-head">
+    <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Notifications</span>
+    <button class="vc-btn" onclick="closeDrawer()" style="background:var(--ink3)"><i class="ti ti-x" style="font-size:16px;color:var(--text2)"></i></button>
+  </div>
+  <div class="notif-item"><div class="notif-col" style="background:#34d399"></div><div><div class="notif-txt"><strong>Spanish dubbing complete</strong> — Python for Beginners, 47 segments synced</div><div class="notif-time">2 min ago</div></div></div>
+  <div class="notif-item"><div class="notif-col" style="background:#7c6ff7"></div><div><div class="notif-txt"><strong>Review request</strong> — Aiko needs your approval on Japanese translation</div><div class="notif-time">18 min ago</div></div></div>
+  <div class="notif-item"><div class="notif-col" style="background:#fbbf24"></div><div><div class="notif-txt"><strong>Low confidence</strong> — 3 Hindi subtitle segments flagged for review</div><div class="notif-time">1 hr ago</div></div></div>
+  <div class="notif-item"><div class="notif-col" style="background:#22d3ee"></div><div><div class="notif-txt"><strong>AI Tutor</strong> — 124 learners used the AI Tutor today</div><div class="notif-time">3 hr ago</div></div></div>
+  <div class="notif-item"><div class="notif-col" style="background:#fb7185"></div><div><div class="notif-txt"><strong>Export failed</strong> — Arabic SCORM package failed. Retry needed.</div><div class="notif-time">5 hr ago</div></div></div>
+</div>
+
+<!-- ==================== LANDING PAGE ==================== -->
+<div class="landing act" id="landingView">
+  <!-- Hero -->
+  <div class="hero">
+    <nav class="hero-nav">
+      <div class="hero-logo">
+        <div class="hero-logo-mark"><i class="ti ti-language" style="color:#fff;font-size:17px"></i></div>
+        SkillLingo AI
+      </div>
+      <div class="hero-nav-links">
+        <a onclick="scrollTo('#features')">Features</a>
+        <a onclick="scrollTo('#pricing')">Pricing</a>
+        <a onclick="scrollTo('#testimonials')">Testimonials</a>
+        <a onclick="showApp()">Sign in</a>
+      </div>
+      <button class="cta-primary" style="padding:9px 18px;font-size:13px" onclick="showApp()">Get started free</button>
+    </nav>
+
+    <div class="hero-eyebrow">
+      <span class="live-dot" style="width:7px;height:7px;background:#34d399;border-radius:50%;display:inline-block"></span>
+      Now with AI voice cloning in 47 languages
+    </div>
+    <h1 class="hero-h1">Learn Skills in<br><span class="grad">Your Own Language</span></h1>
+    <p class="hero-sub">AI-powered platform that automatically translates, dubs, and localizes your courses into 47+ languages — in minutes, not months.</p>
+    <div class="hero-cta">
+      <button class="cta-primary" onclick="showApp()">Open Dashboard <i class="ti ti-arrow-right" style="font-size:14px;vertical-align:-1px;margin-left:2px"></i></button>
+      <button class="cta-secondary">Watch demo <i class="ti ti-player-play" style="font-size:14px;vertical-align:-1px;margin-left:2px"></i></button>
+    </div>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-n">47+</div><div class="h-stat-l">Languages supported</div></div>
+      <div class="h-stat"><div class="h-stat-n">10M+</div><div class="h-stat-l">Learners reached</div></div>
+      <div class="h-stat"><div class="h-stat-n">3.2×</div><div class="h-stat-l">Avg revenue lift</div></div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="section" id="features">
+    <div class="section-label">Core features</div>
+    <h2 class="section-title">Everything you need<br>to go global</h2>
+    <p class="section-sub">From AI translation to voice dubbing and real-time analytics — one platform to localize your entire course catalog.</p>
+    <div class="features-grid">
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(124,111,247,0.15)"><i class="ti ti-language" style="color:#7c6ff7;font-size:22px"></i></div><div class="feat-name">AI Translation</div><div class="feat-desc">Context-aware translation that understands technical vocabulary, maintains tone, and adapts cultural nuances automatically.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(34,211,238,0.12)"><i class="ti ti-microphone" style="color:#22d3ee;font-size:22px"></i></div><div class="feat-name">Voice Dubbing</div><div class="feat-desc">Clone the original instructor's voice and dub courses with natural-sounding AI audio in 47 languages, with lip-sync support.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(52,211,153,0.12)"><i class="ti ti-subtask" style="color:#34d399;font-size:22px"></i></div><div class="feat-name">Subtitle Generation</div><div class="feat-desc">Auto-generate, time-sync, and export subtitles in SRT, VTT, and SCORM formats with AI confidence scoring.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(251,191,36,0.12)"><i class="ti ti-robot" style="color:#fbbf24;font-size:22px"></i></div><div class="feat-name">AI Tutor</div><div class="feat-desc">Embedded AI tutor that answers learner questions in their native language, course-aware and context-sensitive.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(251,113,133,0.12)"><i class="ti ti-chart-dots" style="color:#fb7185;font-size:22px"></i></div><div class="feat-name">Analytics & ROI</div><div class="feat-desc">Track engagement, completion rates, and revenue impact by language with real-time dashboards and exportable reports.</div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(129,140,248,0.12)"><i class="ti ti-users" style="color:#818cf8;font-size:22px"></i></div><div class="feat-name">Team Collaboration</div><div class="feat-desc">Assign reviewers by language, manage permissions, track review status, and get approval workflows built in.</div></div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div style="background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 40px" id="pricing">
+    <div style="max-width:900px;margin:0 auto;text-align:center">
+      <div class="section-label" style="margin-bottom:8px">Pricing</div>
+      <h2 class="section-title" style="margin-bottom:10px">Simple, transparent pricing</h2>
+      <p style="color:var(--text2);font-size:15px;margin-bottom:50px">Start free. Scale as you grow. No hidden fees.</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-tier">Starter</div>
+          <div class="price-amount"><sup>$</sup>29<span class="per">/mo</span></div>
+          <div class="price-desc">For indie educators</div>
+          <div class="price-features">
+            <div><span class="check">✓</span>5 languages</div>
+            <div><span class="check">✓</span>1,000 AI credits</div>
+            <div><span class="check">✓</span>Subtitles only</div>
+            <div><span class="check">✓</span>2 team members</div>
+          </div>
+          <button class="cta-secondary" style="width:100%;margin-top:20px;padding:10px;font-size:13px" onclick="showApp()">Get started</button>
+        </div>
+        <div class="price-card popular">
+          <div class="pop-badge">Most popular</div>
+          <div class="price-tier">Pro</div>
+          <div class="price-amount"><sup>$</sup>99<span class="per">/mo</span></div>
+          <div class="price-desc">For growing teams</div>
+          <div class="price-features">
+            <div><span class="check">✓</span>10 languages</div>
+            <div><span class="check">✓</span>5,000 AI credits</div>
+            <div><span class="check">✓</span>AI dubbing + cloning</div>
+            <div><span class="check">✓</span>5 team members</div>
+            <div><span class="check">✓</span>Analytics dashboard</div>
+          </div>
+          <button class="cta-primary" style="width:100%;margin-top:20px;padding:10px;font-size:13px" onclick="showApp()">Get started</button>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Enterprise</div>
+          <div class="price-amount" style="font-size:28px">Custom</div>
+          <div class="price-desc">For large organizations</div>
+          <div class="price-features">
+            <div><span class="check">✓</span>All 47+ languages</div>
+            <div><span class="check">✓</span>Unlimited credits</div>
+            <div><span class="check">✓</span>Voice cloning + lip sync</div>
+            <div><span class="check">✓</span>Unlimited team</div>
+            <div><span class="check">✓</span>SSO + SLA</div>
+          </div>
+          <button class="cta-secondary" style="width:100%;margin-top:20px;padding:10px;font-size:13px">Contact sales</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="testimonials" id="testimonials">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="section-label" style="margin-bottom:8px">Testimonials</div>
+      <h2 class="section-title" style="margin-bottom:0">Loved by educators worldwide</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"SkillLingo cut our localization time from 6 weeks to 3 days. The AI dubbing quality is indistinguishable from a human studio recording."</p>
+        <div class="test-author"><div class="test-ava" style="background:linear-gradient(135deg,#7c6ff7,#22d3ee)">RK</div><div><div class="test-name">Rohan Kumar</div><div class="test-role">Head of L&D, Infosys</div></div></div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"We expanded from English-only to 12 languages in one month. Our course completion rates jumped 84% for non-English learners."</p>
+        <div class="test-author"><div class="test-ava" style="background:linear-gradient(135deg,#22d3ee,#34d399)">AT</div><div><div class="test-name">Aiko Tanaka</div><div class="test-role">Founder, LearnJapan Pro</div></div></div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"The AI tutor feature is a game-changer. Learners in rural India now get real-time help in Hindi. Support tickets dropped by 70%."</p>
+        <div class="test-author"><div class="test-ava" style="background:linear-gradient(135deg,#fb7185,#fbbf24)">MP</div><div><div class="test-name">Marie Petit</div><div class="test-role">CPO, EduScale Africa</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-logo">
+      <div class="hero-logo-mark"><i class="ti ti-language" style="color:#fff;font-size:17px"></i></div>
+      SkillLingo AI
+    </div>
+    <p style="font-size:13px;color:var(--text3);margin-bottom:16px">Empowering educators to reach every learner in their language.</p>
+    <div style="display:flex;justify-content:center;gap:24px;font-size:13px;color:var(--text3);margin-bottom:20px">
+      <span style="cursor:pointer;transition:color .15s" onmouseover="this.style.color='#e8e8f0'" onmouseout="this.style.color='#555575'">Privacy</span>
+      <span style="cursor:pointer;transition:color .15s" onmouseover="this.style.color='#e8e8f0'" onmouseout="this.style.color='#555575'">Terms</span>
+      <span style="cursor:pointer;transition:color .15s" onmouseover="this.style.color='#e8e8f0'" onmouseout="this.style.color='#555575'">Docs</span>
+      <span style="cursor:pointer;transition:color .15s" onmouseover="this.style.color='#e8e8f0'" onmouseout="this.style.color='#555575'">Blog</span>
+      <span style="cursor:pointer;transition:color .15s" onmouseover="this.style.color='#e8e8f0'" onmouseout="this.style.color='#555575'">Status</span>
+    </div>
+    <p style="font-size:11px;color:var(--text3)">© 2026 SkillLingo AI. All rights reserved.</p>
+  </div>
+</div>
+
+<!-- ==================== APP SHELL ==================== -->
+<div class="shell" id="appShell" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon"><i class="ti ti-language" style="color:#fff;font-size:16px"></i></div>
+      <span class="sb-logo-text">SkillLingo AI</span>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-section">
+        <div class="sb-label">Main</div>
+        <button class="sb-item act" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
+        <button class="sb-item" onclick="nav('studio',this)"><i class="ti ti-sparkles"></i><span>Localization Studio</span></button>
+        <button class="sb-item" onclick="nav('courses',this)"><i class="ti ti-books"></i><span>Courses</span><span class="sb-badge">12</span></button>
+        <button class="sb-item" onclick="nav('tutor',this)"><i class="ti ti-robot"></i><span>AI Tutor</span></button>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Workflows</div>
+        <button class="sb-item" onclick="nav('jobs',this)"><i class="ti ti-loader"></i><span>AI Jobs</span><span class="sb-badge">3</span></button>
+        <button class="sb-item" onclick="nav('analytics',this)"><i class="ti ti-chart-bar"></i><span>Analytics</span></button>
+        <button class="sb-item" onclick="nav('team',this)"><i class="ti ti-users"></i><span>Team</span></button>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Account</div>
+        <button class="sb-item" onclick="nav('billing',this)"><i class="ti ti-credit-card"></i><span>Billing</span></button>
+        <button class="sb-item" onclick="nav('settings',this)"><i class="ti ti-settings"></i><span>Settings</span></button>
+        <button class="sb-item" onclick="showLanding()" style="margin-top:4px"><i class="ti ti-home"></i><span>Back to Home</span></button>
+      </div>
+    </nav>
+
+    <div class="sb-user">
+      <div class="sb-user-inner" onclick="nav('settings',null)">
+        <div class="sb-avatar">RK</div>
+        <div>
+          <div class="sb-user-name">Rohan Kumar</div>
+          <div class="sb-user-role">Admin · Pro Plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="tb-toggle" onclick="toggleSidebar()"><i class="ti ti-menu-2" style="font-size:16px"></i></button>
+        <div class="breadcrumb">
+          <span>SkillLingo</span>
+          <i class="ti ti-chevron-right" style="font-size:13px;color:var(--text3)"></i>
+          <span class="cur" id="bcLabel">Dashboard</span>
+        </div>
+        <div class="searchbar" onclick="doSearch()">
+          <i class="ti ti-search" style="font-size:14px"></i>
+          <span>Search anything...</span>
+          <span class="kbd">⌘K</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="tb-btn" onclick="openDrawer()" aria-label="Notifications"><i class="ti ti-bell" style="font-size:17px"></i><span class="notif-dot"></span></button>
+        <button class="tb-btn" aria-label="Help"><i class="ti ti-help-circle" style="font-size:17px"></i></button>
+        <button class="btn btn-primary" onclick="nav('courses',null)"><i class="ti ti-plus" style="font-size:14px"></i>New Course</button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="page act" id="pg-dashboard">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">Good morning, Rohan</div>
+            <div class="pg-sub">3 AI jobs running &middot; 2 reviews pending</div>
+          </div>
+          <div class="pg-actions">
+            <button class="btn btn-ghost"><i class="ti ti-download" style="font-size:14px"></i>Export</button>
+            <button class="btn btn-primary" onclick="nav('studio',null)"><i class="ti ti-sparkles" style="font-size:14px"></i>Open Studio</button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card" onclick="nav('courses',null)">
+            <div class="stat-head">
+              <div class="stat-icon" style="background:rgba(124,111,247,0.15)"><i class="ti ti-books" style="color:#7c6ff7;font-size:17px"></i></div>
+              <span class="stat-chip chip-up">↑ 12%</span>
+            </div>
+            <div class="stat-val">47</div>
+            <div class="stat-lbl">Total Courses</div>
+            <div class="stat-foot">38 localized · 9 in progress</div>
+          </div>
+          <div class="stat-card" onclick="nav('analytics',null)">
+            <div class="stat-head">
+              <div class="stat-icon" style="background:rgba(34,211,238,0.12)"><i class="ti ti-world" style="color:#22d3ee;font-size:17px"></i></div>
+              <span class="stat-chip chip-up">↑ 7%</span>
+            </div>
+            <div class="stat-val">23</div>
+            <div class="stat-lbl">Active Languages</div>
+            <div class="stat-foot">Hindi, Spanish, French +20</div>
+          </div>
+          <div class="stat-card" onclick="nav('analytics',null)">
+            <div class="stat-head">
+              <div class="stat-icon" style="background:rgba(52,211,153,0.12)"><i class="ti ti-users" style="color:#34d399;font-size:17px"></i></div>
+              <span class="stat-chip chip-up">↑ 31%</span>
+            </div>
+            <div class="stat-val">8,241</div>
+            <div class="stat-lbl">Active Learners</div>
+            <div class="stat-foot">↑ 1,924 this month</div>
+          </div>
+          <div class="stat-card" onclick="nav('billing',null)">
+            <div class="stat-head">
+              <div class="stat-icon" style="background:rgba(251,191,36,0.12)"><i class="ti ti-coin" style="color:#fbbf24;font-size:17px"></i></div>
+              <span class="stat-chip chip-dn">↓ 8%</span>
+            </div>
+            <div class="stat-val">4,320</div>
+            <div class="stat-lbl">AI Credits Left</div>
+            <div class="stat-foot">~180 hours of dubbing</div>
+          </div>
+        </div>
+
+        <div class="row3">
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div><div class="card-title">Localization Activity</div><div class="card-sub">Hours localized per week</div></div>
+              <div style="display:flex;gap:5px">
+                <button class="btn btn-ghost" style="padding:4px 9px;font-size:11px">Week</button>
+                <button class="btn btn-ghost" style="padding:4px 9px;font-size:11px">Month</button>
+              </div>
+            </div>
+            <div class="bar-chart">
+              <div class="bar-col"><div class="bar-val">18h</div><div class="bar" style="height:50%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.7"></div><div class="bar-lbl">Mon</div></div>
+              <div class="bar-col"><div class="bar-val">32h</div><div class="bar" style="height:84%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6)"></div><div class="bar-lbl">Tue</div></div>
+              <div class="bar-col"><div class="bar-val">24h</div><div class="bar" style="height:63%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.8"></div><div class="bar-lbl">Wed</div></div>
+              <div class="bar-col"><div class="bar-val">38h</div><div class="bar" style="height:100%;background:linear-gradient(180deg,#22d3ee,#7c6ff7)"></div><div class="bar-lbl">Thu</div></div>
+              <div class="bar-col"><div class="bar-val">29h</div><div class="bar" style="height:76%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.9"></div><div class="bar-lbl">Fri</div></div>
+              <div class="bar-col"><div class="bar-val">12h</div><div class="bar" style="height:31%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.5"></div><div class="bar-lbl">Sat</div></div>
+              <div class="bar-col"><div class="bar-val">7h</div><div class="bar" style="height:18%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.4"></div><div class="bar-lbl">Sun</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:4px">Top Languages</div>
+            <div class="card-sub">By learner adoption</div>
+            <svg viewBox="0 0 100 100" width="96" height="96" style="display:block;margin:12px auto 0">
+              <circle cx="50" cy="50" r="36" fill="none" stroke="#1c1e2e" stroke-width="16"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="#7c6ff7" stroke-width="16" stroke-dasharray="79 147" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="#22d3ee" stroke-width="16" stroke-dasharray="45 181" stroke-dashoffset="-79" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="#34d399" stroke-width="16" stroke-dasharray="29 197" stroke-dashoffset="-124" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="#fbbf24" stroke-width="16" stroke-dasharray="20 206" stroke-dashoffset="-153" transform="rotate(-90 50 50)"/>
+              <text x="50" y="46" text-anchor="middle" fill="#e8e8f0" font-size="10" font-family="Syne,sans-serif" font-weight="800">23</text>
+              <text x="50" y="57" text-anchor="middle" fill="#555575" font-size="7" font-family="DM Sans,sans-serif">langs</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="dleg-item"><div class="dleg-dot" style="background:#7c6ff7"></div><span class="dleg-name">Hindi</span><span class="dleg-pct">35%</span></div>
+              <div class="dleg-item"><div class="dleg-dot" style="background:#22d3ee"></div><span class="dleg-name">Spanish</span><span class="dleg-pct">20%</span></div>
+              <div class="dleg-item"><div class="dleg-dot" style="background:#34d399"></div><span class="dleg-name">French</span><span class="dleg-pct">13%</span></div>
+              <div class="dleg-item"><div class="dleg-dot" style="background:#fbbf24"></div><span class="dleg-name">Others</span><span class="dleg-pct">32%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div class="card-title">Active AI Jobs</div>
+              <button class="btn btn-ghost" style="padding:4px 9px;font-size:12px" onclick="nav('jobs',null)">View all →</button>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Course</th><th>Task</th><th>Language</th><th>Status</th><th>Progress</th></tr></thead>
+                <tbody>
+                  <tr><td><div class="td-main">Python Fundamentals</div></td><td>AI Dubbing</td><td>🇪🇸 Spanish</td><td><span class="badge b-proc pulsing"><i class="ti ti-loader spinning" style="font-size:10px"></i> Running</span></td><td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="p1" style="width:73%"></div></div><span class="prog-lbl" id="p1t">73%</span></div></td></tr>
+                  <tr><td><div class="td-main">React Advanced</div></td><td>Subtitles</td><td>🇯🇵 Japanese</td><td><span class="badge b-proc pulsing"><i class="ti ti-loader spinning" style="font-size:10px"></i> Running</span></td><td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="p2" style="width:45%"></div></div><span class="prog-lbl" id="p2t">45%</span></div></td></tr>
+                  <tr><td><div class="td-main">Data Science 101</div></td><td>Translation</td><td>🇮🇳 Hindi</td><td><span class="badge b-done"><i class="ti ti-check" style="font-size:10px"></i> Done</span></td><td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:100%;background:#34d399"></div></div><span class="prog-lbl">100%</span></div></td></tr>
+                  <tr><td><div class="td-main">UX Design Pro</div></td><td>AI Dubbing</td><td>🇫🇷 French</td><td><span class="badge b-queue"><i class="ti ti-clock" style="font-size:10px"></i> Queued</span></td><td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:0%"></div></div><span class="prog-lbl">0%</span></div></td></tr>
+                  <tr><td><div class="td-main">ML Engineering</div></td><td>Subtitles</td><td>🇩🇪 German</td><td><span class="badge b-err"><i class="ti ti-x" style="font-size:10px"></i> Failed</span></td><td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:22%;background:#fb7185"></div></div><span class="prog-lbl">22%</span></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">Recent Activity</div>
+            <div class="act-list">
+              <div class="act-item"><div class="act-icon" style="background:rgba(52,211,153,0.12)"><i class="ti ti-check" style="color:#34d399;font-size:14px"></i></div><div><div class="act-text"><strong>Spanish dubbing</strong> completed for Python course</div><div class="act-time">2 min ago</div></div></div>
+              <div class="act-item"><div class="act-icon" style="background:rgba(124,111,247,0.12)"><i class="ti ti-upload" style="color:#7c6ff7;font-size:14px"></i></div><div><div class="act-text"><strong>Aiko Tanaka</strong> uploaded UX Design module 4</div><div class="act-time">34 min ago</div></div></div>
+              <div class="act-item"><div class="act-icon" style="background:rgba(34,211,238,0.1)"><i class="ti ti-robot" style="color:#22d3ee;font-size:14px"></i></div><div><div class="act-text"><strong>AI Tutor</strong> answered 247 learner questions</div><div class="act-time">1 hr ago</div></div></div>
+              <div class="act-item"><div class="act-icon" style="background:rgba(251,191,36,0.1)"><i class="ti ti-eye" style="color:#fbbf24;font-size:14px"></i></div><div><div class="act-text"><strong>You</strong> approved Hindi subtitles for Data Science 101</div><div class="act-time">3 hr ago</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== STUDIO ===== -->
+      <div class="page" id="pg-studio">
+        <div class="pg-header">
+          <div><div class="pg-title">Localization Studio</div><div class="pg-sub">Python Fundamentals — Module 3</div></div>
+          <div class="pg-actions">
+            <button class="btn btn-ghost"><i class="ti ti-download" style="font-size:14px"></i>Export</button>
+            <button class="btn btn-primary" onclick="runLocalization()"><i class="ti ti-sparkles" style="font-size:14px"></i>Run AI Localization</button>
+          </div>
+        </div>
+
+        <div class="studio-grid">
+          <div class="studio-main">
+            <!-- Video -->
+            <div class="video-card">
+              <div class="video-area" onclick="this.innerHTML='<div style=\'text-align:center;color:#555575\'><i class=\'ti ti-player-pause\' style=\'font-size:44px;display:block;margin-bottom:8px\'></i><div style=\'font-size:13px\'>Paused — 4:12 / 15:30</div></div>'">
+                <div class="video-placeholder">
+                  <i class="ti ti-player-play"></i>
+                  <div style="font-size:14px;font-weight:500;margin-bottom:4px">Click to preview</div>
+                  <div style="font-size:12px">Python Fundamentals · Module 3 · Functions</div>
+                </div>
+                <div style="position:absolute;top:10px;right:10px">
+                  <span class="badge b-proc pulsing"><i class="ti ti-loader spinning" style="font-size:10px"></i> Processing</span>
+                </div>
+              </div>
+              <div class="video-controls">
+                <button class="vc-btn"><i class="ti ti-player-skip-back" style="font-size:13px"></i></button>
+                <button class="vc-btn"><i class="ti ti-player-play" style="font-size:13px"></i></button>
+                <button class="vc-btn"><i class="ti ti-player-skip-forward" style="font-size:13px"></i></button>
+                <div style="flex:1;height:3px;background:var(--ink4);border-radius:3px;cursor:pointer;overflow:hidden" onclick="seekBar(event,this)">
+                  <div id="seekFill" style="height:100%;width:27%;background:linear-gradient(90deg,#7c6ff7,#22d3ee);border-radius:3px;pointer-events:none"></div>
+                </div>
+                <span style="font-size:11px;color:var(--text3);font-family:monospace">4:12 / 15:30</span>
+                <select class="sel" style="width:auto;padding:4px 7px;font-size:11px"><option>1×</option><option>1.25×</option><option>1.5×</option><option>2×</option></select>
+                <button class="vc-btn"><i class="ti ti-maximize" style="font-size:13px"></i></button>
+              </div>
+            </div>
+
+            <!-- Waveform -->
+            <div class="card card-sm">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <i class="ti ti-wavesaw-tool" style="color:#7c6ff7;font-size:16px"></i>
+                <span class="card-title">Audio Waveform — Spanish Dub</span>
+                <span class="badge b-done" style="margin-left:auto;font-size:10px">AI Generated</span>
+              </div>
+              <div class="waveform-row" id="waveformEl"></div>
+            </div>
+
+            <!-- Subtitle Editor -->
+            <div class="sub-editor">
+              <div class="sub-thead">
+                <span>Timecode</span><span>Source (EN)</span><span>Translation (ES)</span><span>Confidence</span>
+              </div>
+              <div class="sub-row active-sub">
+                <span class="sub-time">00:04:10</span>
+                <span class="sub-src">Now let's define a function</span>
+                <span class="sub-trg">Ahora definamos una función</span>
+                <div class="conf"><div class="conf-bar"><div class="conf-fill" style="width:96%;background:#34d399"></div></div><span style="color:#34d399">96%</span></div>
+              </div>
+              <div class="sub-row">
+                <span class="sub-time">00:04:18</span>
+                <span class="sub-src">with the def keyword</span>
+                <span class="sub-trg">con la palabra clave def</span>
+                <div class="conf"><div class="conf-bar"><div class="conf-fill" style="width:99%;background:#34d399"></div></div><span style="color:#34d399">99%</span></div>
+              </div>
+              <div class="sub-row">
+                <span class="sub-time">00:04:25</span>
+                <span class="sub-src">followed by the function name</span>
+                <span class="sub-trg">seguido del nombre de la función</span>
+                <div class="conf"><div class="conf-bar"><div class="conf-fill" style="width:88%;background:#fbbf24"></div></div><span style="color:#fbbf24">88%</span></div>
+              </div>
+              <div class="sub-row">
+                <span class="sub-time">00:04:31</span>
+                <span class="sub-src">and parentheses for parameters</span>
+                <span class="sub-trg" style="color:#fb7185">⚠ Needs review</span>
+                <div class="conf"><div class="conf-bar"><div class="conf-fill" style="width:52%;background:#fb7185"></div></div><span style="color:#fb7185">52%</span></div>
+              </div>
+              <div class="sub-row">
+                <span class="sub-time">00:04:40</span>
+                <span class="sub-src">Let me show you a quick example</span>
+                <span class="sub-trg">Déjame mostrarte un ejemplo rápido</span>
+                <div class="conf"><div class="conf-bar"><div class="conf-fill" style="width:94%;background:#34d399"></div></div><span style="color:#34d399">94%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Studio Panel -->
+          <div class="studio-panel">
+            <div class="card card-sm">
+              <div class="card-title">Target Languages</div>
+              <div class="lang-grid">
+                <div class="lang-chip sel-chip" onclick="toggleChip(this)"><span class="flag">🇪🇸</span>Spanish</div>
+                <div class="lang-chip sel-chip" onclick="toggleChip(this)"><span class="flag">🇯🇵</span>Japanese</div>
+                <div class="lang-chip sel-chip" onclick="toggleChip(this)"><span class="flag">🇮🇳</span>Hindi</div>
+                <div class="lang-chip sel-chip" onclick="toggleChip(this)"><span class="flag">🇫🇷</span>French</div>
+                <div class="lang-chip" onclick="toggleChip(this)"><span class="flag">🇩🇪</span>German</div>
+                <div class="lang-chip" onclick="toggleChip(this)"><span class="flag">🇧🇷</span>Portuguese</div>
+                <div class="lang-chip" onclick="toggleChip(this)"><span class="flag">🇸🇦</span>Arabic</div>
+                <div class="lang-chip" onclick="toggleChip(this)"><span class="flag">🇨🇳</span>Chinese</div>
+              </div>
+            </div>
+
+            <div class="card card-sm">
+              <div class="card-title" style="margin-bottom:12px">AI Configuration</div>
+              <div class="toggle-row"><span class="toggle-lbl">Auto-translate</span><div class="tog on" onclick="this.classList.toggle('on')"><div class="tog-thumb"></div></div></div>
+              <div class="toggle-row"><span class="toggle-lbl">AI Dubbing</span><div class="tog on" onclick="this.classList.toggle('on')"><div class="tog-thumb"></div></div></div>
+              <div class="toggle-row"><span class="toggle-lbl">Voice cloning</span><div class="tog" onclick="this.classList.toggle('on')"><div class="tog-thumb"></div></div></div>
+              <div class="toggle-row"><span class="toggle-lbl">Lip sync</span><div class="tog" onclick="this.classList.toggle('on')"><div class="tog-thumb"></div></div></div>
+              <div style="margin-top:10px">
+                <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Voice style</div>
+                <select class="sel"><option>Professional Female</option><option>Professional Male</option><option>Clone Original</option><option>Neutral</option></select>
+              </div>
+              <div style="margin-top:8px">
+                <div style="font-size:11px;color:var(--text3);margin-bottom:4px">AI Model</div>
+                <select class="sel"><option>SkillLingo Ultra</option><option>SkillLingo Fast</option><option>Custom Fine-tune</option></select>
+              </div>
+            </div>
+
+            <div class="card card-sm">
+              <div class="card-title" style="margin-bottom:10px">Translation Quality</div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="color:var(--text2)">Overall Score</span><span style="color:#34d399;font-weight:600">94.2%</span></div>
+              <div class="prog-track" style="width:100%;height:5px;margin-bottom:12px"><div class="prog-fill" style="width:94%;background:#34d399"></div></div>
+              <div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:4px"><span>Segments reviewed</span><span style="color:var(--text)">142 / 178</span></div>
+              <div style="font-size:12px;color:var(--text2);display:flex;justify-content:space-between"><span>Needs attention</span><span style="color:#fb7185">3 segments</span></div>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" onclick="runLocalization()"><i class="ti ti-sparkles"></i>Run AI Localization</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== COURSES ===== -->
+      <div class="page" id="pg-courses">
+        <div class="pg-header">
+          <div><div class="pg-title">Course Library</div><div class="pg-sub">47 courses · 38 localized</div></div>
+          <button class="btn btn-primary"><i class="ti ti-upload" style="font-size:14px"></i>Upload Course</button>
+        </div>
+
+        <div class="drop-zone" id="dropZone" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event)" onclick="alert('File picker would open here — connect to your backend to process uploads.')">
+          <i class="ti ti-cloud-upload drop-icon"></i>
+          <div style="font-size:15px;font-weight:500;margin-bottom:4px">Drop course files here or click to browse</div>
+          <div style="font-size:13px;color:var(--text3);margin-bottom:10px">MP4, MP3, WAV, PDF, DOCX, PPTX, SCORM</div>
+          <div class="format-pills">
+            <span class="fmt">MP4</span><span class="fmt">MP3</span><span class="fmt">WAV</span>
+            <span class="fmt">PDF</span><span class="fmt">DOCX</span><span class="fmt">PPTX</span><span class="fmt">SCORM</span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div class="card-title">All Courses (47)</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px"><i class="ti ti-filter" style="font-size:13px"></i>Filter</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px"><i class="ti ti-arrows-sort" style="font-size:13px"></i>Sort</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Course Name</th><th>Duration</th><th>Languages</th><th>Learners</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><div class="td-main">Python Fundamentals</div><div class="td-sub">12 modules · 4h 32m</div></td><td>4h 32m</td><td style="font-size:16px">🇪🇸🇯🇵🇮🇳🇫🇷 <span style="font-size:11px;color:var(--text3)">+3</span></td><td>2,841</td><td><span class="badge b-proc pulsing">Localizing</span></td><td><button class="btn btn-ghost" style="padding:4px 9px;font-size:11px" onclick="nav('studio',null)">Open Studio</button></td></tr>
+              <tr><td><div class="td-main">React Advanced Course</div><div class="td-sub">18 modules · 7h 10m</div></td><td>7h 10m</td><td style="font-size:16px">🇯🇵🇩🇪 <span style="font-size:11px;color:var(--text3)">+1</span></td><td>1,203</td><td><span class="badge b-proc pulsing">Localizing</span></td><td><button class="btn btn-ghost" style="padding:4px 9px;font-size:11px" onclick="nav('studio',null)">Open Studio</button></td></tr>
+              <tr><td><div class="td-main">Data Science 101</div><div class="td-sub">24 modules · 9h 45m</div></td><td>9h 45m</td><td style="font-size:16px">🇮🇳🇪🇸🇫🇷🇧🇷🇨🇳</td><td>4,197</td><td><span class="badge b-done">Published</span></td><td><button class="btn btn-ghost" style="padding:4px 9px;font-size:11px" onclick="nav('studio',null)">Open Studio</button></td></tr>
+              <tr><td><div class="td-main">UX Design Pro</div><div class="td-sub">10 modules · 3h 20m</div></td><td>3h 20m</td><td style="font-size:16px">🇫🇷</td><td>489</td><td><span class="badge b-queue">Queued</span></td><td><button class="btn btn-ghost" style="padding:4px 9px;font-size:11px" onclick="nav('studio',null)">Open Studio</button></td></tr>
+              <tr><td><div class="td-main">ML Engineering Deep Dive</div><div class="td-sub">30 modules · 12h 00m</div></td><td>12h 00m</td><td style="font-size:16px">🇩🇪</td><td>312</td><td><span class="badge b-err">Error</span></td><td><button class="btn btn-ghost" style="padding:4px 9px;font-size:11px" onclick="nav('studio',null)">Open Studio</button></td></tr>
+              <tr><td><div class="td-main">Cloud Architecture Essentials</div><div class="td-sub">8 modules · 2h 40m</div></td><td>2h 40m</td><td style="font-size:16px">🇮🇳🇪🇸</td><td>876</td><td><span class="badge b-done">Published</span></td><td><button class="btn btn-ghost" style="padding:4px 9px;font-size:11px" onclick="nav('studio',null)">Open Studio</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== AI TUTOR ===== -->
+      <div class="page" id="pg-tutor">
+        <div class="tutor-grid">
+          <div class="chat-panel">
+            <div class="chat-header">
+              <div class="ai-ava"><i class="ti ti-robot" style="color:#fff;font-size:16px"></i></div>
+              <div>
+                <div style="font-size:13px;font-weight:600;font-family:'Syne',sans-serif">SkillLingo AI Tutor</div>
+                <div style="font-size:11px;color:var(--text3)"><span class="online-dot"></span>Online · Context: Python Fundamentals</div>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:5px">
+                <button class="vc-btn" style="background:var(--ink3)"><i class="ti ti-microphone" style="font-size:14px;color:var(--text2)"></i></button>
+                <button class="vc-btn" style="background:var(--ink3)" onclick="clearChat()"><i class="ti ti-trash" style="font-size:14px;color:var(--text2)"></i></button>
+              </div>
+            </div>
+            <div class="suggestions">
+              <button class="sug-chip" onclick="addMsg('What is a Python decorator?')">What is a decorator?</button>
+              <button class="sug-chip" onclick="addMsg('Explain list comprehensions')">List comprehensions</button>
+              <button class="sug-chip" onclick="addMsg('How does async/await work?')">async / await</button>
+              <button class="sug-chip" onclick="addMsg('Show me a real-world example')">Real-world example</button>
+              <button class="sug-chip" onclick="addMsg('Quiz me on this module')">Quiz me</button>
+            </div>
+            <div class="chat-msgs" id="chatMsgs">
+              <div class="msg ai">Hi! I'm your AI Tutor for <strong>Python Fundamentals</strong>. I can explain concepts, answer questions, or quiz you on what you've watched. What would you like to explore?<div class="msg-meta">AI Tutor · Just now</div></div>
+              <div class="msg user">Can you explain what a decorator does in Python?<div class="msg-meta">You · 2m ago</div></div>
+              <div class="msg ai">A <strong>decorator</strong> wraps a function to modify or extend its behaviour — without changing the original code.<br><br>Think of it like a gift box: <code style="background:rgba(124,111,247,0.2);padding:1px 5px;border-radius:4px;font-size:11px">@my_decorator</code> placed above a function automatically runs the decorator logic every time that function is called.<br><br>Common uses include logging, auth checks, caching, and performance timing.<div class="msg-meta">AI Tutor · 2m ago</div></div>
+            </div>
+            <div class="chat-footer">
+              <div class="chat-input-row">
+                <textarea class="chat-ta" id="chatInput" placeholder="Ask anything about the course..." rows="1" onkeydown="chatKey(event)"></textarea>
+                <button class="send-btn" onclick="sendChat()"><i class="ti ti-send" style="font-size:15px"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="overflow-y:auto">
+            <div class="card-title" style="margin-bottom:14px">Course Context</div>
+            <div style="background:var(--ink3);border-radius:var(--r);padding:12px;margin-bottom:14px;font-size:12px;color:var(--text2)">
+              <div style="font-weight:600;color:var(--text);margin-bottom:3px">Now watching</div>
+              Module 3 · Functions & Decorators<br>
+              <span style="color:var(--text3)">4:12 / 15:30 · 28% complete</span>
+            </div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:8px">Your progress</div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text2)">Module 1 — Basics</span><span style="color:#34d399">✓ Done</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text2)">Module 2 — Data Types</span><span style="color:#34d399">✓ Done</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:#7c6ff7;font-weight:500">Module 3 — Functions</span><span style="color:#7c6ff7">In progress</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text3)">Module 4 — OOP</span><span style="color:var(--text3)">Locked</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text3)">Module 5 — APIs</span><span style="color:var(--text3)">Locked</span></div>
+            </div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:8px">AI Tutor stats</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div style="background:var(--ink3);border-radius:var(--r);padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#7c6ff7">24</div><div style="font-size:10px;color:var(--text3)">Questions asked</div></div>
+              <div style="background:var(--ink3);border-radius:var(--r);padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#34d399">91%</div><div style="font-size:10px;color:var(--text3)">Comprehension</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== JOBS ===== -->
+      <div class="page" id="pg-jobs">
+        <div class="pg-header">
+          <div><div class="pg-title">AI Job Queue</div><div class="pg-sub">Real-time localization pipeline</div></div>
+          <div class="pg-actions">
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#34d399">
+              <span style="width:7px;height:7px;background:#34d399;border-radius:50%;display:inline-block" class="pulsing"></span>Live
+            </div>
+            <button class="btn btn-ghost"><i class="ti ti-refresh" style="font-size:14px"></i>Refresh</button>
+          </div>
+        </div>
+        <div class="jobs-summary">
+          <div class="jsum" style="background:rgba(124,111,247,0.1);border-color:rgba(124,111,247,0.2)"><div class="jsum-n" style="color:#7c6ff7">3</div><div class="jsum-l">Running</div></div>
+          <div class="jsum" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.2)"><div class="jsum-n" style="color:#fbbf24">7</div><div class="jsum-l">Queued</div></div>
+          <div class="jsum" style="background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.2)"><div class="jsum-n" style="color:#34d399">124</div><div class="jsum-l">Completed</div></div>
+          <div class="jsum" style="background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.2)"><div class="jsum-n" style="color:#fb7185">2</div><div class="jsum-l">Failed</div></div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Job ID</th><th>Course</th><th>Task</th><th>Language</th><th>Started</th><th>Status</th><th>Progress</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--text3)">#JOB-0841</td><td>Python Fundamentals</td><td>AI Dubbing</td><td>🇪🇸 Spanish</td><td style="font-size:12px;color:var(--text3)">12m ago</td><td><span class="badge b-proc pulsing"><i class="ti ti-loader spinning" style="font-size:10px"></i> Running</span></td><td><div class="prog-wrap"><div class="prog-track" style="min-width:70px"><div class="prog-fill" id="jp1" style="width:73%"></div></div><span class="prog-lbl" id="jp1t">73%</span></div></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Cancel</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--text3)">#JOB-0840</td><td>React Advanced</td><td>Subtitles</td><td>🇯🇵 Japanese</td><td style="font-size:12px;color:var(--text3)">28m ago</td><td><span class="badge b-proc pulsing"><i class="ti ti-loader spinning" style="font-size:10px"></i> Running</span></td><td><div class="prog-wrap"><div class="prog-track" style="min-width:70px"><div class="prog-fill" id="jp2" style="width:45%"></div></div><span class="prog-lbl" id="jp2t">45%</span></div></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Cancel</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--text3)">#JOB-0839</td><td>Data Science 101</td><td>Translation</td><td>🇮🇳 Hindi</td><td style="font-size:12px;color:var(--text3)">1hr ago</td><td><span class="badge b-done"><i class="ti ti-check" style="font-size:10px"></i> Done</span></td><td><div class="prog-wrap"><div class="prog-track" style="min-width:70px"><div class="prog-fill" style="width:100%;background:#34d399"></div></div><span class="prog-lbl">100%</span></div></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Download</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--text3)">#JOB-0838</td><td>UX Design Pro</td><td>AI Dubbing</td><td>🇫🇷 French</td><td style="font-size:12px;color:var(--text3)">2hr ago</td><td><span class="badge b-queue"><i class="ti ti-clock" style="font-size:10px"></i> Queued</span></td><td><div class="prog-wrap"><div class="prog-track" style="min-width:70px"><div class="prog-fill" style="width:0%"></div></div><span class="prog-lbl">0%</span></div></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Remove</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;color:var(--text3)">#JOB-0837</td><td>ML Engineering</td><td>Subtitles</td><td>🇩🇪 German</td><td style="font-size:12px;color:var(--text3)">4hr ago</td><td><span class="badge b-err"><i class="ti ti-x" style="font-size:10px"></i> Failed</span></td><td><div class="prog-wrap"><div class="prog-track" style="min-width:70px"><div class="prog-fill" style="width:22%;background:#fb7185"></div></div><span class="prog-lbl">22%</span></div></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Retry</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== ANALYTICS ===== -->
+      <div class="page" id="pg-analytics">
+        <div class="pg-header">
+          <div><div class="pg-title">Analytics</div><div class="pg-sub">Localization ROI, engagement &amp; language performance</div></div>
+          <div class="pg-actions">
+            <select class="sel" style="width:auto"><option>Last 30 days</option><option>Last 90 days</option><option>This year</option></select>
+            <button class="btn btn-ghost"><i class="ti ti-download" style="font-size:14px"></i>Export</button>
+          </div>
+        </div>
+
+        <div class="row33">
+          <div class="metric-pill">
+            <div class="metric-big">3.2×</div>
+            <div class="metric-lbl">Revenue multiplier from localization</div>
+          </div>
+          <div style="background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.18);border-radius:var(--r2);padding:14px;text-align:center">
+            <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#22d3ee">84%</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Completion rate — localized courses</div>
+          </div>
+          <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.18);border-radius:var(--r2);padding:14px;text-align:center">
+            <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fbbf24">94.2%</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">AI translation approval rate</div>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:4px">Watch Time by Language (hrs)</div>
+            <div class="card-sub">This month</div>
+            <div class="bar-chart">
+              <div class="bar-col"><div class="bar-val">4.2h</div><div class="bar" style="height:75%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6)"></div><div class="bar-lbl">🇮🇳 HI</div></div>
+              <div class="bar-col"><div class="bar-val">3.8h</div><div class="bar" style="height:68%;background:linear-gradient(180deg,#22d3ee,#7c6ff7)"></div><div class="bar-lbl">🇪🇸 ES</div></div>
+              <div class="bar-col"><div class="bar-val">3.1h</div><div class="bar" style="height:55%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6)"></div><div class="bar-lbl">🇫🇷 FR</div></div>
+              <div class="bar-col"><div class="bar-val">2.4h</div><div class="bar" style="height:43%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.75"></div><div class="bar-lbl">🇯🇵 JA</div></div>
+              <div class="bar-col"><div class="bar-val">5.6h</div><div class="bar" style="height:100%;background:linear-gradient(180deg,#22d3ee,#7c6ff7)"></div><div class="bar-lbl">🇺🇸 EN</div></div>
+              <div class="bar-col"><div class="bar-val">1.9h</div><div class="bar" style="height:34%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.6"></div><div class="bar-lbl">🇩🇪 DE</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px">Completion Rates by Language</div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Hindi</span><span style="color:#22d3ee">84%</span></div><div class="prog-track" style="height:5px;width:100%"><div class="prog-fill" style="width:84%;background:#22d3ee"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Spanish</span><span style="color:#7c6ff7">79%</span></div><div class="prog-track" style="height:5px;width:100%"><div class="prog-fill" style="width:79%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>English (original)</span><span style="color:#34d399">72%</span></div><div class="prog-track" style="height:5px;width:100%"><div class="prog-fill" style="width:72%;background:#34d399"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>French</span><span style="color:#9d94fa">68%</span></div><div class="prog-track" style="height:5px;width:100%"><div class="prog-fill" style="width:68%;background:#9d94fa"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Japanese</span><span style="color:#fbbf24">61%</span></div><div class="prog-track" style="height:5px;width:100%"><div class="prog-fill" style="width:61%;background:#fbbf24"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px">Learner Growth by Language</div>
+          <div class="card-sub">Monthly active learners</div>
+          <div class="bar-chart">
+            <div class="bar-col"><div class="bar-val">1.2k</div><div class="bar" style="height:21%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.5"></div><div class="bar-lbl">Jan</div></div>
+            <div class="bar-col"><div class="bar-val">1.8k</div><div class="bar" style="height:32%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.6"></div><div class="bar-lbl">Feb</div></div>
+            <div class="bar-col"><div class="bar-val">2.4k</div><div class="bar" style="height:43%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.7"></div><div class="bar-lbl">Mar</div></div>
+            <div class="bar-col"><div class="bar-val">3.1k</div><div class="bar" style="height:55%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.8"></div><div class="bar-lbl">Apr</div></div>
+            <div class="bar-col"><div class="bar-val">4.2k</div><div class="bar" style="height:75%;background:linear-gradient(180deg,#7c6ff7,#5b5bd6);opacity:.9"></div><div class="bar-lbl">May</div></div>
+            <div class="bar-col"><div class="bar-val">5.8k</div><div class="bar" style="height:100%;background:linear-gradient(180deg,#22d3ee,#7c6ff7)"></div><div class="bar-lbl">Jun</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TEAM ===== -->
+      <div class="page" id="pg-team">
+        <div class="pg-header">
+          <div><div class="pg-title">Team Management</div><div class="pg-sub">Manage roles, permissions and reviewers</div></div>
+          <button class="btn btn-primary"><i class="ti ti-user-plus" style="font-size:14px"></i>Invite Member</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Member</th><th>Role</th><th>Languages</th><th>Active Jobs</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="team-ava" style="background:linear-gradient(135deg,#7c6ff7,#22d3ee)">RK</div><div><div class="td-main">Rohan Kumar</div><div class="td-sub">rohan@acme.com</div></div></div></td><td><span class="badge b-proc">Admin</span></td><td>EN, HI, ES</td><td>2</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="team-ava" style="background:linear-gradient(135deg,#22d3ee,#34d399)">AT</div><div><div class="td-main">Aiko Tanaka</div><div class="td-sub">aiko@acme.com</div></div></div></td><td><span class="badge b-rev">Reviewer</span></td><td>JA, EN</td><td>1</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="team-ava" style="background:linear-gradient(135deg,#fb7185,#fbbf24)">MP</div><div><div class="td-main">Marie Petit</div><div class="td-sub">marie@acme.com</div></div></div></td><td><span class="badge b-rev">Reviewer</span></td><td>FR, ES</td><td>0</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="team-ava" style="background:linear-gradient(135deg,#34d399,#22d3ee)">PS</div><div><div class="td-main">Priya Sharma</div><div class="td-sub">priya@acme.com</div></div></div></td><td><span class="badge b-done" style="background:rgba(52,211,153,0.15)">Editor</span></td><td>HI, EN</td><td>3</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="team-ava" style="background:var(--ink4);color:var(--text3)">KL</div><div><div class="td-main" style="color:var(--text2)">Kai Lange (pending)</div><div class="td-sub">kai@acme.com</div></div></div></td><td><span class="badge b-queue">Viewer</span></td><td>DE</td><td>—</td><td><span class="badge b-queue">Pending</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Resend</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== BILLING ===== -->
+      <div class="page" id="pg-billing">
+        <div class="pg-header">
+          <div><div class="pg-title">Billing &amp; Credits</div><div class="pg-sub">Manage your plan, credits and invoices</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+          <div>
+            <div class="plan-grid">
+              <div class="plan-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">$29<span>/mo</span></div>
+                <div class="plan-desc">1,000 AI credits/mo</div>
+                <div class="plan-feature">✓ 5 languages<br>✓ Subtitles only<br>✓ 2 team members</div>
+                <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:14px;font-size:12px">Downgrade</button>
+              </div>
+              <div class="plan-card featured">
+                <div class="plan-badge">Current Plan</div>
+                <div class="plan-name" style="color:#7c6ff7">Pro</div>
+                <div class="plan-price" style="color:#9d94fa">$99<span>/mo</span></div>
+                <div class="plan-desc">5,000 AI credits/mo</div>
+                <div class="plan-feature">✓ 10 languages<br>✓ AI dubbing<br>✓ 5 team members<br>✓ Analytics</div>
+                <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:14px;font-size:12px;opacity:.5">Active</button>
+              </div>
+              <div class="plan-card">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-price" style="font-size:20px">Custom</div>
+                <div class="plan-desc">Unlimited credits</div>
+                <div class="plan-feature">✓ All 47+ languages<br>✓ Voice cloning<br>✓ Unlimited team<br>✓ SSO + SLA</div>
+                <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px;font-size:12px">Contact Sales</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title" style="margin-bottom:14px">Invoice History</div>
+              <table style="width:100%">
+                <thead><tr><th>Invoice</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td style="font-family:monospace;font-size:11px">#INV-0241</td><td style="font-size:12px;color:var(--text2)">May 1, 2026</td><td style="font-weight:500">$99.00</td><td><span class="badge b-done">Paid</span></td><td><button class="btn btn-ghost" style="padding:2px 7px;font-size:11px">PDF</button></td></tr>
+                  <tr><td style="font-family:monospace;font-size:11px">#INV-0228</td><td style="font-size:12px;color:var(--text2)">Apr 1, 2026</td><td style="font-weight:500">$99.00</td><td><span class="badge b-done">Paid</span></td><td><button class="btn btn-ghost" style="padding:2px 7px;font-size:11px">PDF</button></td></tr>
+                  <tr><td style="font-family:monospace;font-size:11px">#INV-0215</td><td style="font-size:12px;color:var(--text2)">Mar 1, 2026</td><td style="font-weight:500">$99.00</td><td><span class="badge b-done">Paid</span></td><td><button class="btn btn-ghost" style="padding:2px 7px;font-size:11px">PDF</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-title" style="margin-bottom:12px">AI Credit Usage</div>
+              <div style="text-align:center;margin-bottom:10px">
+                <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#7c6ff7">4,320</div>
+                <div style="font-size:12px;color:var(--text3)">remaining of 5,000</div>
+              </div>
+              <div class="prog-track" style="height:7px;width:100%;margin-bottom:8px"><div class="prog-fill" style="width:86%"></div></div>
+              <div style="font-size:11px;color:var(--text3);margin-bottom:12px">680 credits used this month</div>
+              <div style="border-top:1px solid var(--border);padding-top:12px;font-size:12px;display:flex;flex-direction:column;gap:5px">
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">AI Dubbing</span><span>412</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Translation</span><span>180</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Subtitles</span><span>88</span></div>
+              </div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;font-size:12px">Buy More Credits</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS ===== -->
+      <div class="page" id="pg-settings">
+        <div class="pg-header">
+          <div><div class="pg-title">Settings</div><div class="pg-sub">Profile, organization, AI and security</div></div>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-nav">
+            <button class="sb-item act" style="font-size:13px"><i class="ti ti-user"></i><span>Profile</span></button>
+            <button class="sb-item" style="font-size:13px"><i class="ti ti-building"></i><span>Organization</span></button>
+            <button class="sb-item" style="font-size:13px"><i class="ti ti-language"></i><span>Language Prefs</span></button>
+            <button class="sb-item" style="font-size:13px"><i class="ti ti-robot"></i><span>AI Config</span></button>
+            <button class="sb-item" style="font-size:13px"><i class="ti ti-bell"></i><span>Notifications</span></button>
+            <button class="sb-item" style="font-size:13px"><i class="ti ti-lock"></i><span>Security</span></button>
+            <button class="sb-item" style="font-size:13px"><i class="ti ti-key"></i><span>API Keys</span></button>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:20px">Profile Settings</div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)">
+              <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#7c6ff7,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0">RK</div>
+              <div>
+                <div style="font-size:15px;font-weight:600;font-family:'Syne',sans-serif">Rohan Kumar</div>
+                <div style="font-size:12px;color:var(--text3)">rohan@acme.com · Admin</div>
+                <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px;margin-top:8px">Change Photo</button>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+              <div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">First Name</label><input class="inp" value="Rohan"></div>
+              <div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Last Name</label><input class="inp" value="Kumar"></div>
+              <div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Email</label><input class="inp" value="rohan@acme.com" type="email"></div>
+              <div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Timezone</label><select class="sel"><option>Asia/Kolkata (IST +5:30)</option><option>UTC</option><option>America/New_York (EST)</option></select></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" onclick="alert('Changes saved!')">Save Changes</button>
+              <button class="btn btn-ghost">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /appShell -->
+
+<!-- Tabler Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+
+<script>
+// ==================== APP / LANDING ====================
+function showApp(){
+  document.getElementById('landingView').classList.remove('act');
+  document.getElementById('landingView').style.display='none';
+  document.getElementById('appShell').style.display='flex';
+}
+function showLanding(){
+  document.getElementById('appShell').style.display='none';
+  document.getElementById('landingView').style.display='block';
+  document.getElementById('landingView').classList.add('act');
+}
+
+// ==================== NAV ====================
+const PAGES=['dashboard','studio','courses','tutor','jobs','analytics','team','billing','settings'];
+const LABELS={dashboard:'Dashboard',studio:'Localization Studio',courses:'Courses',tutor:'AI Tutor',jobs:'AI Job Queue',analytics:'Analytics',team:'Team',billing:'Billing',settings:'Settings'};
+
+function nav(id,btn){
+  PAGES.forEach(p=>{
+    const el=document.getElementById('pg-'+p);
+    if(el)el.classList.remove('act');
+  });
+  const pg=document.getElementById('pg-'+id);
+  if(pg)pg.classList.add('act');
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('act'));
+  if(btn)btn.classList.add('act');
+  const bc=document.getElementById('bcLabel');
+  if(bc)bc.textContent=LABELS[id]||id;
+  if(id==='dashboard'||id==='studio'){
+    if(document.getElementById('appShell').style.display==='none')showApp();
+  }
+}
+
+// ==================== SIDEBAR ====================
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('slim');
+}
+
+// ==================== DRAWER ====================
+function openDrawer(){
+  document.getElementById('notifDrawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+function closeDrawer(){
+  document.getElementById('notifDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+// ==================== SEARCH ====================
+function doSearch(){
+  const q=prompt('Search SkillLingo...\n\nTry: studio, analytics, billing, team, jobs, tutor, courses, settings');
+  if(!q)return;
+  const l=q.toLowerCase();
+  const map={studio:['studio','localiz','subtit','dub'],dashboard:['dash','home','overview'],analytics:['analyt','chart','roi','report'],billing:['bill','plan','credit','invoice','pay'],team:['team','member','role','review'],jobs:['job','queue','pipeline','process'],tutor:['tutor','chat','ai','question'],courses:['course','upload','library'],settings:['setting','profile','api','security']};
+  for(const[pg,kws]of Object.entries(map)){if(kws.some(k=>l.includes(k))){nav(pg,null);return;}}
+  alert('No results for "'+q+'"');
+}
+
+// ==================== WAVEFORM ====================
+function buildWaveform(){
+  const el=document.getElementById('waveformEl');
+  if(!el)return;
+  for(let i=0;i<90;i++){
+    const b=document.createElement('div');
+    b.className='wv'+(i>20&&i<40?' active':'');
+    const h=8+Math.random()*30;
+    b.style.height=h+'px';
+    el.appendChild(b);
+  }
+}
+buildWaveform();
+
+// ==================== SEEK BAR ====================
+function seekBar(e,el){
+  const r=el.getBoundingClientRect();
+  const pct=Math.min(100,Math.max(0,((e.clientX-r.left)/r.width)*100));
+  document.getElementById('seekFill').style.width=Math.round(pct)+'%';
+}
+
+// ==================== STUDIO ACTIONS ====================
+function toggleChip(el){el.classList.toggle('sel-chip')}
+function runLocalization(){
+  const btn=event.target.closest('button');
+  if(!btn)return;
+  const orig=btn.innerHTML;
+  btn.innerHTML='<i class="ti ti-loader spinning" style="font-size:14px"></i> Running...';
+  btn.disabled=true;
+  setTimeout(()=>{btn.innerHTML=orig;btn.disabled=false;},2500);
+}
+
+// ==================== CHAT ====================
+const aiReplies=[
+  "Great question! In Python, <strong>functions</strong> are first-class objects — you can pass them as arguments, return them from other functions, and store them in variables. This is what makes decorators so elegant.",
+  "A <strong>list comprehension</strong> gives you a concise way to create lists: <code style='background:rgba(124,111,247,0.2);padding:1px 5px;border-radius:4px;font-size:11px'>[x*2 for x in range(10)]</code>. It's faster and more readable than a traditional for-loop.",
+  "<strong>async/await</strong> is Python's concurrency model. Mark a function with <code style='background:rgba(124,111,247,0.2);padding:1px 5px;border-radius:4px;font-size:11px'>async def</code> and use <code style='background:rgba(124,111,247,0.2);padding:1px 5px;border-radius:4px;font-size:11px'>await</code> to pause until an async operation completes — without blocking the event loop.",
+  "Here's a real-world example: a <strong>retry decorator</strong> that automatically re-runs a flaky API call up to 3 times before raising an exception — used in production at every major tech company.",
+  "To quiz you on Module 3: What keyword do you use to define a function in Python, and what does the <code style='background:rgba(124,111,247,0.2);padding:1px 5px;border-radius:4px;font-size:11px'>return</code> statement do? Take your time!",
+];
+let riIdx=0;
+
+function addMsg(text){
+  document.getElementById('chatInput').value=text;
+  sendChat();
+}
+function sendChat(){
+  const inp=document.getElementById('chatInput');
+  const txt=inp.value.trim();
+  if(!txt)return;
+  const box=document.getElementById('chatMsgs');
+  const um=document.createElement('div');
+  um.className='msg user';
+  um.innerHTML=txt+'<div class="msg-meta">You · Just now</div>';
+  box.appendChild(um);
+  inp.value='';
+  box.scrollTop=box.scrollHeight;
+
+  const typing=document.createElement('div');
+  typing.className='msg ai';
+  typing.innerHTML='<span class="cursor"></span>';
+  box.appendChild(typing);
+  box.scrollTop=box.scrollHeight;
+
+  setTimeout(()=>{
+    typing.innerHTML=(aiReplies[riIdx%aiReplies.length])+'<div class="msg-meta">AI Tutor · Just now</div>';
+    riIdx++;
+    box.scrollTop=box.scrollHeight;
+  },1300);
+}
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+function clearChat(){
+  const box=document.getElementById('chatMsgs');
+  box.innerHTML='<div class="msg ai">Chat cleared. Ask me anything about your course!<div class="msg-meta">AI Tutor · Just now</div></div>';
+}
+
+// ==================== DROP ZONE ====================
+function dzOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('dragging')}
+function dzLeave(){document.getElementById('dropZone').classList.remove('dragging')}
+function dzDrop(e){e.preventDefault();dzLeave();alert('File dropped! Connect to your backend API to process uploads.')}
+
+// ==================== LIVE PROGRESS ====================
+let p1=73,p2=45;
+setInterval(()=>{
+  if(p1<98){
+    p1+=Math.random()*0.5;
+    const v=Math.round(p1);
+    const fills=['p1','jp1'];const txts=['p1t','jp1t'];
+    fills.forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=v+'%';});
+    txts.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=v+'%';});
+  }
+  if(p2<96){
+    p2+=Math.random()*0.35;
+    const v=Math.round(p2);
+    const fills=['p2','jp2'];const txts=['p2t','jp2t'];
+    fills.forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=v+'%';});
+    txts.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=v+'%';});
+  }
+},900);
+
+// ==================== KEYBOARD SHORTCUTS ====================
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();doSearch();}
+});
+</script>
+</body>
+</html>
