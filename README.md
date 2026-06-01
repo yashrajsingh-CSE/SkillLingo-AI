@@ -31,70 +31,70 @@ SkillLingo AI is a full-featured SaaS dashboard for course creators and L&D team
 ### 🏠 Landing Page
 The marketing homepage with hero section, key metrics, features, pricing tiers, and testimonials.
 
-![Landing Page](Screenshot_2026-06-01_203532.png)
+![Landing Page](Screenshot_2026-05-30_084254.png)
 
 ---
 
 ### 📊 Dashboard
 The main command center showing active courses, AI job statuses, learner counts, localization activity charts, and recent events.
 
-![Dashboard](Screenshot_2026-06-01_203545.png)
+![Dashboard](Screenshot_2026-05-30_084303.png)
 
 ---
 
 ### 🎬 Localization Studio
 The core workspace for reviewing AI-generated translations, subtitle timecodes, confidence scores, audio waveforms, and configuring AI settings per language.
 
-![Localization Studio](Screenshot_2026-06-01_203551.png)
+![Localization Studio](Screenshot_2026-05-30_084309.png)
 
 ---
 
 ### 📚 Course Library
 Upload and manage your entire course catalog. Supports MP4, MP3, WAV, PDF, DOCX, PPTX, and SCORM formats with drag-and-drop ingestion.
 
-![Course Library](Screenshot_2026-06-01_203556.png)
+![Course Library](Screenshot_2026-05-30_084315.png)
 
 ---
 
 ### 🤖 AI Tutor
 An embedded conversational AI tutor that answers learner questions in their native language, with full course context awareness and progress tracking.
 
-![AI Tutor](Screenshot_2026-06-01_203601.png)
+![AI Tutor](Screenshot_2026-05-30_084321.png)
 
 ---
 
 ### ⚙️ AI Job Queue
 Real-time pipeline view of all localization jobs — running, queued, completed, and failed — with live progress bars and per-job actions.
 
-![AI Job Queue](Screenshot_2026-06-01_203606.png)
+![AI Job Queue](Screenshot_2026-05-30_084326.png)
 
 ---
 
 ### 📈 Analytics
 Comprehensive reporting on watch time by language, completion rates, learner growth over time, and localization ROI metrics.
 
-![Analytics](Screenshot_2026-06-01_203610.png)
+![Analytics](Screenshot_2026-05-30_084333.png)
 
 ---
 
 ### 👥 Team Management
 Role-based access control — manage admins, reviewers, editors, and viewers with per-language assignments and invite workflows.
 
-![Team Management](Screenshot_2026-06-01_203615.png)
+![Team Management](Screenshot_2026-05-30_084339.png)
 
 ---
 
 ### 💳 Billing & Credits
 Plan management (Starter / Pro / Enterprise), AI credit usage breakdown, and invoice history with PDF download.
 
-![Billing & Credits](Screenshot_2026-06-01_203620.png)
+![Billing & Credits](Screenshot_2026-05-30_084344.png)
 
 ---
 
 ### ⚙️ Settings
 Profile settings, organization config, language preferences, AI configuration, notifications, security, and API key management.
 
-![Settings](Screenshot_2026-06-01_203625.png)
+![Settings](Screenshot_2026-05-30_084349.png)
 
 ---
 
